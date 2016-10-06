@@ -1,0 +1,22 @@
+@import 'bulma';
+
+body{
+	display: flex;
+	justify-content: center;
+}
+
+.container-div{
+	margin: 0 10px 0 10px;
+}
+
+.nav-item{
+	margin-right: 10px;
+}
+
+#board {
+	width: 95vw;
+	height: .85714*95vw;
+	max-width: 617px;
+	max-height: 529px;
+	background: orange;
+}
