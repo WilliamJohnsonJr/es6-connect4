@@ -13,9 +13,9 @@ function Board(){
 	this.columns.forEach(function(column, index){
 		let columnIndex = index;
 		let boardColumnIndex = ".board-column-"+columnIndex;
-		$("#board").append(`<div class="board-column-${index} board-column">Column</div>`)
+		$("#board").append(`<div class="board-column-${index} board-column"></div>`)
 		column.forEach(function(rowSpace, index, columnIndex){
-			$(boardColumnIndex).append(`<div class="row-space-${index} row-space">rowSpace</div>`)
+			$(boardColumnIndex).append(`<div class="row-space-${index} row-space"></div>`)
 		})
 	})
 }
