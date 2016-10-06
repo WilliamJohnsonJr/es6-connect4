@@ -6,6 +6,6 @@ function init(e){
 	e.preventDefault();
 	$(".start-text").remove();
 	let game = new Game();
-}
+};
 
 $(".start-button").on('click', init);
