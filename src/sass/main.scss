@@ -13,6 +13,13 @@ body{
 	margin-right: 10px;
 }
 
+.start-button {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
 #board {
 	width: 95vw;
 	height: .85714*95vw;
@@ -36,4 +43,13 @@ body{
 	border: 6px solid #FFDF01;
 	border-radius: 100%;
 	box-sizing: border-box;
+}
+
+.start-text {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	font-size: 40px;
+	color: black;
 }
