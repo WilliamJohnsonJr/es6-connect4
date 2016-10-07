@@ -2,6 +2,7 @@ import $ from 'jquery';
 import _ from 'lodash';
 import {Player} from './player.js';
 import {Computer} from './computer.js';
+import {wins} from './wins.js';
 
 function Board(){
 // Object property and method declarations/maps
@@ -12,8 +13,7 @@ function Board(){
 	this.dropChip = dropChip;
 	let player = new Player();
 	let computer = new Computer();
-
-	//Constructs data arrays for board data
+	//Constructs data arrays to generate board.
 	this.rows = [];
 	for(let y=0; y<6; y++){
 		let row = [];
@@ -49,7 +49,39 @@ function Board(){
 	};
 
 	let checkForWin = ()=>{
+		let spacesObject = $('.space');
+		let spacesArray = $.makeArray(spacesObject);
+		let redSpaces = [];
+		let blackSpaces = [];
+		spacesArray.forEach(function(space){
+			if ($(space).attr('data-filled')==='red'){
+				redSpaces.push(Number($(space).attr('data-space')));
+			} else if($(space).attr('data-filled')==='black'){
+				blackSpaces.push(Number($(space).attr('data-space')));
+			};
+		});	
+		
+		wins.forEach(function(win){
+			let blackMatchArray = [];
+			let redMatchArray = [];
+			for (let x=0; x<4; x++){
+				if (blackSpaces.includes(win[x])){
+					blackMatchArray.push(true);
+				}
 
+				if (redSpaces.includes(win[x])){
+					redMatchArray.push(true);
+				}
+			}
+
+			if (blackMatchArray == [true,true,true,true]){
+				alert('You Lose!');
+			};
+
+			if (redMatchArray === [true,true,true,true]){
+				alert('You Win!');
+			}
+		});
 	};
 
 	let dropChip = (e)=>{
@@ -78,6 +110,7 @@ function Board(){
 				$(columnArray[x]).attr('data-filled', chipColor);
 				$(columnArray[x]).css('background', chipColor);
 				//Stops for loop once chip has been dropped.
+				checkForWin();
 				return;
 			}
 		}
