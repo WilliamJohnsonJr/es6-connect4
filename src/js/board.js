@@ -70,6 +70,7 @@ function Board(){
 		//Reverses array so that a forEach can be run to check and see if spaces are filled from the bottom of
 		//the board up.
 		columnArray = columnArray.reverse();
+		//Drops chip into selected board column.
 		for (let x=0; x<6; x++){
 			let filledStatus = $(columnArray[x]).attr('data-filled');
 			filledStatus = (filledStatus !== "false");
@@ -84,10 +85,18 @@ function Board(){
 
 	function hoverShade (e) {
 		e.preventDefault();
+		let target = e.target;
+		if ($(target).attr('data-filled') === 'false'){
+			$(target).css('background', 'lightgrey');
+		};	
 	}
 
 	function removeShade(e){
 		e.preventDefault();
+		let target = e.target;
+		if ($(target).attr('data-filled') === 'false'){
+			$(target).css('background', 'white');
+		};		
 	}
 
 	// Adds a click event listener to each column on the board.
