@@ -95,37 +95,35 @@ function Board(){
 			let spaceResults = spaceChecker();
 			let redSpaces = spaceResults[1];
 			let blackSpaces = spaceResults[0];
-			let blockMove = wins.forEach(function(win){
+			let blockMove = [];
+			let boardStatus = wins.map(function(win){
 				if (redSpaces.includes(win[0])){
 					if (redSpaces.includes(win[1])){
 						if (redSpaces.includes(win[2])){
-							return win[3];
-						} else {
-							return -1;
+							blockMove.push(win[3]);
 						}
 					}
 				}
 			})
-			let winMove = wins.forEach(function(win){
+			let winMove = []
+			wins.forEach(function(win){
 				if (blackSpaces.includes(win[0])){
 					if (blackSpaces.includes(win[1])){
 						if (blackSpaces.includes(win[2])){
-							return win[3];
-						} else {
-							return -1;
+							winMove.push(win[3]);
 						}
 					}
 				}
 			})
-			let pickSpacesObject;
-			if (blockMove >= 0) {
-				let q = blockMove;
-				pickSpace = $(`.space[data-space=${q}]`).trigger('click');
-			} else if (winMove >= 0){
-				let q = winMove;
-				pickSpace = $(`.space[data-space=${q}]`).trigger('click');
+			if (blockMove[0] >= 0) {
+				let q = blockMove[0];
+				$(`.space[data-space=${q}]`).trigger('click');
+			} else if (winMove[0] >= 0){
+				let q = winMove[0];
+				$(`.space[data-space=${q}]`).trigger('click');
 			} else {
 				let q = Math.floor(Math.random() * 7);
+				let pickSpacesObject;
 				pickSpacesObject = $(`.space[data-column=${q}]`);			
 				let pickSpacesArray = $.makeArray(pickSpacesObject);
 				$(pickSpacesArray[0]).trigger('click');
