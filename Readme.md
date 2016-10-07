@@ -1,5 +1,9 @@
 #ES6 Connect Four
 
+![Board Picture] (boardpic.png)
+
+##Live at: <https://williamjohnsonjr-connectfour.surge.sh/>
+
 A Connect Four game built using JavaScript ES6 modules. See installation instructions below.
 
 Original approach was to try to create a web app game using Ruby and/or Ruby on Rails, but both of these approaches would eventually require use of CoffeeScript, JS, and/or jQuery to handle events and manipulate the DOM. As a result, I opted to use regular JavaScript, ES6 modules, and jQuery.
