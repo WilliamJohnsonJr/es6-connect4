@@ -8,7 +8,6 @@ function Board(){
 // Object property and method declarations/maps
 	this.turnCount = 0;
 	this.turn = 'computer';
-	this.takeTurn = takeTurn;
 	this.checkForWin = checkForWin;
 	this.dropChip = dropChip;
 	let player = new Player();
@@ -35,18 +34,6 @@ function Board(){
 			spaceCounter++;
 		});
 	});
-
-	let takeTurn = ()=>{
-		if (this.turn='computer'){
-			computer.computerTurn();
-			this.turnCount++;
-			this.turn='player';
-		} else if (this.turn='player'){
-			player.playerTurn();
-			this.turn='computer';
-			this.turnCount++;
-		}
-	};
 
 	let checkForWin = ()=>{
 		let spacesObject = $('.space');
@@ -82,6 +69,9 @@ function Board(){
 				}
 			}
 		});
+		if (this.turnCount === 41){
+			alert('Draw!');
+		}
 	};
 
 	let dropChip = (e)=>{
@@ -115,6 +105,7 @@ function Board(){
 				//Stops for loop once chip has been dropped.
 				checkForWin();
 				this.turn = turnChange;
+				this.turnCount++;
 				return;
 			}
 		}
