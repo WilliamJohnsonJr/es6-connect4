@@ -116,21 +116,51 @@ function Board(){
 					}
 				}
 			});
-			if (blockMove[0] >= 0) {
+			if (blockMove[0] >= 0) {				
 				let q = blockMove[0];
-				$(`.space[data-space=${q}]`).trigger('click');
+				let pickSpacesObject;
+				let column = $(`.space[data-space=${q}]`).attr('data-column');
+				pickSpacesObject = $(`.space[data-column=${column}]`);			
+				let pickSpacesArray = $.makeArray(pickSpacesObject);
+				let topSpace = pickSpacesArray[0];
+				let filled = $(topSpace).attr('data-filled');
+				if (filled ==='false'){				
+					$(`.space[data-space=${q}]`).trigger('click');
+				} else {
+					pickRandomSpace();
+				}
 			} else if (winMove[0] >= 0){
 				let q = winMove[0];
-				$(`.space[data-space=${q}]`).trigger('click');
-			} else {
-				let q = Math.floor(Math.random() * 7);
 				let pickSpacesObject;
-				pickSpacesObject = $(`.space[data-column=${q}]`);			
+				let column = $(`.space[data-space=${q}]`).attr('data-column');
+				pickSpacesObject = $(`.space[data-column=${column}]`);			
 				let pickSpacesArray = $.makeArray(pickSpacesObject);
-				$(pickSpacesArray[0]).trigger('click');
+				let topSpace = pickSpacesArray[0];
+				let filled = $(topSpace).attr('data-filled');
+				if (filled ==='false'){				
+					$(`.space[data-space=${q}]`).trigger('click');
+				} else {
+					pickRandomSpace();
+				}
+			} else {
+				pickRandomSpace();
 			}
 		}
 	};
+
+	let pickRandomSpace = ()=>{
+		let q = Math.floor(Math.random() * 7);
+		let pickSpacesObject;
+		pickSpacesObject = $(`.space[data-column=${q}]`);			
+		let pickSpacesArray = $.makeArray(pickSpacesObject);
+		let topSpace = pickSpacesArray[0];
+		let filled = $(topSpace).attr('data-filled');
+		if (filled ==='false'){				
+			$(topSpace).trigger('click');	
+		} else {
+			pickRandomSpace();
+		}
+	}
 
 	let dropChip = (e)=>{
 		e.preventDefault();
