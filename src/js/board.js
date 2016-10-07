@@ -34,8 +34,8 @@ function Board(){
 			spaceCounter++;
 		});
 	});
-
-	let checkForWin = ()=>{
+	// Finds which spaces on the board have been filled, and returns an array containing all black spaces and red spaces.
+	let spaceChecker = ()=>{
 		let spacesObject = $('.space');
 		let spacesArray = $.makeArray(spacesObject);
 		let redSpaces = [];
@@ -47,37 +47,89 @@ function Board(){
 				blackSpaces.push(Number($(space).attr('data-space')));
 			}
 		});	
-		
-		wins.forEach(function(win){
-			if (blackSpaces.includes(win[0])){
-				if (blackSpaces.includes(win[1])){
-					if (blackSpaces.includes(win[2])){
-						if (blackSpaces.includes(win[3])){
-							alert('You Lose!');
-						}
-					}
-				}
-			}
+		let resultArray = [blackSpaces, redSpaces]
+		return resultArray;
+	}
 
-			if (redSpaces.includes(win[0])){
-				if (redSpaces.includes(win[1])){
-					if (redSpaces.includes(win[2])){
-						if (redSpaces.includes(win[3])){
-							alert('You Win!');
+	let checkForWin = ()=>{
+		let resultArray = spaceChecker();
+		let blackSpaces = resultArray[0];
+		let redSpaces = resultArray[1];
+
+		if (this.turn === 'computer'){
+			wins.forEach(function(win){
+				if (blackSpaces.includes(win[0])){
+					if (blackSpaces.includes(win[1])){
+						if (blackSpaces.includes(win[2])){
+							if (blackSpaces.includes(win[3])){
+								$('.space').off('click');
+								alert('You Lose!');
+							}
 						}
 					}
 				}
-			}
-		});
+			})
+		}
+		if (this.turn === 'player'){
+			wins.forEach(function(win){
+				if (redSpaces.includes(win[0])){
+					if (redSpaces.includes(win[1])){
+						if (redSpaces.includes(win[2])){
+							if (redSpaces.includes(win[3])){
+								$('.space').off('click');
+								alert('You Win!');
+							}
+						}
+					}
+				}
+			})
+		}
 		if (this.turnCount === 41){
+			$('.space').off('click');
 			alert('Draw!');
 		}
 	};
 
 	let computerTurn = ()=>{
 		if (this.turn === 'computer') {
-			let q = Math.floor(Math.random() * 7);
-			$(`.space[data-column=${q}]`).trigger('click');			
+			let spaceResults = spaceChecker();
+			let redSpaces = spaceResults[1];
+			let blackSpaces = spaceResults[0];
+			let blockMove = wins.forEach(function(win){
+				if (redSpaces.includes(win[0])){
+					if (redSpaces.includes(win[1])){
+						if (redSpaces.includes(win[2])){
+							return win[3];
+						} else {
+							return -1;
+						}
+					}
+				}
+			})
+			let winMove = wins.forEach(function(win){
+				if (blackSpaces.includes(win[0])){
+					if (blackSpaces.includes(win[1])){
+						if (blackSpaces.includes(win[2])){
+							return win[3];
+						} else {
+							return -1;
+						}
+					}
+				}
+			})
+			let pickSpacesObject;
+			if (blockMove >= 0) {
+				let q = blockMove;
+				pickSpace = $(`.space[data-space=${q}]`).trigger('click');
+			} else if (winMove >= 0){
+				let q = winMove;
+				pickSpace = $(`.space[data-space=${q}]`).trigger('click');
+			} else {
+				let q = Math.floor(Math.random() * 7);
+				pickSpacesObject = $(`.space[data-column=${q}]`);			
+				let pickSpacesArray = $.makeArray(pickSpacesObject);
+				$(pickSpacesArray[0]).trigger('click');
+			}
 		}
 	}
 
@@ -113,6 +165,7 @@ function Board(){
 				checkForWin();
 				this.turn = turnChange;
 				this.turnCount++;
+				computerTurn();
 				return;
 			}
 		}
@@ -140,6 +193,5 @@ function Board(){
 	}
 
 	computerTurn();
-
 }
 export {Board};
