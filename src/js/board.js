@@ -74,6 +74,13 @@ function Board(){
 		}
 	};
 
+	let computerTurn = ()=>{
+		if (this.turn === 'computer') {
+			let q = Math.floor(Math.random() * 7);
+			$(`.space[data-column=${q}]`).trigger('click');			
+		}
+	}
+
 	let dropChip = (e)=>{
 		e.preventDefault();
 		let chipColor;
@@ -131,6 +138,8 @@ function Board(){
 	for(let x=0; x<7; x++){
 		$(`.space[data-column=${x}]`).on({click: dropChip, mouseenter: hoverShade, mouseleave: removeShade});
 	}
+
+	computerTurn();
 
 }
 export {Board};
