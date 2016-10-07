@@ -2,6 +2,7 @@ import $ from 'jquery';
 import _ from 'lodash';
 import {Player} from './player.js';
 import {Computer} from './computer.js';
+import {wins} from './wins.js';
 
 function Board(){
 // Object property and method declarations/maps
@@ -12,8 +13,7 @@ function Board(){
 	this.dropChip = dropChip;
 	let player = new Player();
 	let computer = new Computer();
-
-	//Constructs data arrays for board data
+	//Constructs data arrays to generate board.
 	this.rows = [];
 	for(let y=0; y<6; y++){
 		let row = [];
@@ -49,16 +49,51 @@ function Board(){
 	};
 
 	let checkForWin = ()=>{
+		let spacesObject = $('.space');
+		let spacesArray = $.makeArray(spacesObject);
+		let redSpaces = [];
+		let blackSpaces = [];
+		spacesArray.forEach(function(space){
+			if ($(space).attr('data-filled')==='red'){
+				redSpaces.push(Number($(space).attr('data-space')));
+			} else if($(space).attr('data-filled')==='black'){
+				blackSpaces.push(Number($(space).attr('data-space')));
+			};
+		});	
+		
+		wins.forEach(function(win){
+			if (blackSpaces.includes(win[0])){
+				if (blackSpaces.includes(win[1])){
+					if (blackSpaces.includes(win[2])){
+						if (blackSpaces.includes(win[3])){
+							alert('You Lose!');
+						}
+					}
+				}
+			}
 
+			if (redSpaces.includes(win[0])){
+				if (redSpaces.includes(win[1])){
+					if (redSpaces.includes(win[2])){
+						if (redSpaces.includes(win[3])){
+							alert('You Win!');
+						}
+					}
+				}
+			}
+		})
 	};
 
 	let dropChip = (e)=>{
 		e.preventDefault();
 		let chipColor;
-		if (this.turn === "computer"){
+		let turnChange;
+		if (this.turn === 'computer'){
 			chipColor = computer.chip;
-		} else if (this.turn === "player") {
+			turnChange = 'player';
+		} else if (this.turn === 'player') {
 			chipColor = player.chip;
+			turnChange = 'computer';
 		}
 		let target = e.target;
 		let column = $(target).attr('data-column');
@@ -78,6 +113,8 @@ function Board(){
 				$(columnArray[x]).attr('data-filled', chipColor);
 				$(columnArray[x]).css('background', chipColor);
 				//Stops for loop once chip has been dropped.
+				checkForWin();
+				this.turn = turnChange;
 				return;
 			}
 		}
