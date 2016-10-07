@@ -1,12 +1,12 @@
 import $ from 'jquery';
-import {Game} from './game.js';
+import {Board} from './board.js';
 
 function init(e){
 	e.preventDefault();
 	$('.start-button').off('click');
 	$('.start-button').remove();
 	$('.start-text').remove();
-	let game = new Game();
+	let gameBoard = new Board();
 }
 
 $('.start-button').on('click', init);
