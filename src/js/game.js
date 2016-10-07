@@ -12,9 +12,6 @@ function Game () {
 	let player = new Player();
 	let computer = new Computer();
 	let gameBoard = new Board();
-	console.log(gameBoard.columns);
-
-
 
 	let takeTurn = ()=>{
 		if (this.turn="computer"){
