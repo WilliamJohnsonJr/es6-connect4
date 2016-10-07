@@ -1,9 +1,5 @@
 function Computer () {
-	this.chip = "black"
+	this.chip = 'black';
 }
 
-function SmartComputer(){
-
-}
-
-export { Computer, SmartComputer };
+export { Computer};

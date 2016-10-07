@@ -1,5 +1,5 @@
 function Player () {
-	this.chip = "red";
+	this.chip = 'red';
 }
 
 export {Player};
