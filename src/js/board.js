@@ -62,35 +62,38 @@ function Board(){
 		});	
 		
 		wins.forEach(function(win){
-			let blackMatchArray = [];
-			let redMatchArray = [];
-			for (let x=0; x<4; x++){
-				if (blackSpaces.includes(win[x])){
-					blackMatchArray.push(true);
-				}
-
-				if (redSpaces.includes(win[x])){
-					redMatchArray.push(true);
+			if (blackSpaces.includes(win[0])){
+				if (blackSpaces.includes(win[1])){
+					if (blackSpaces.includes(win[2])){
+						if (blackSpaces.includes(win[3])){
+							alert('You Lose!');
+						}
+					}
 				}
 			}
 
-			if (blackMatchArray == [true,true,true,true]){
-				alert('You Lose!');
-			};
-
-			if (redMatchArray === [true,true,true,true]){
-				alert('You Win!');
+			if (redSpaces.includes(win[0])){
+				if (redSpaces.includes(win[1])){
+					if (redSpaces.includes(win[2])){
+						if (redSpaces.includes(win[3])){
+							alert('You Win!');
+						}
+					}
+				}
 			}
-		});
+		})
 	};
 
 	let dropChip = (e)=>{
 		e.preventDefault();
 		let chipColor;
-		if (this.turn === "computer"){
+		let turnChange;
+		if (this.turn === 'computer'){
 			chipColor = computer.chip;
-		} else if (this.turn === "player") {
+			turnChange = 'player';
+		} else if (this.turn === 'player') {
 			chipColor = player.chip;
+			turnChange = 'computer';
 		}
 		let target = e.target;
 		let column = $(target).attr('data-column');
@@ -111,6 +114,7 @@ function Board(){
 				$(columnArray[x]).css('background', chipColor);
 				//Stops for loop once chip has been dropped.
 				checkForWin();
+				this.turn = turnChange;
 				return;
 			}
 		}
