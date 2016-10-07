@@ -9,7 +9,9 @@ function Board(){
 		}
 		this.rows.push(row);
 	}
+	//Creates a space number for each consecutive space on the board via spaceCounter++ below. Allows for checking for wins.
 	let spaceCounter = 0;
+	//Runs through the arrays and generates a board that corresponds to the structure of the this.rows, row, and column arrays.
 	this.rows.forEach(function(row, index){
 		let rowIndex = index;
 		let boardRowIndex = ".board-row-"+rowIndex;
@@ -19,6 +21,7 @@ function Board(){
 			spaceCounter++;
 		})
 	})
-	console.log(this.rows);
+	// Grabs every space that is in column 2.
+	console.log($(".space[data-column='2']"));
 }
 export {Board};
