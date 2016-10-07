@@ -58,7 +58,7 @@ function Board(){
 				redSpaces.push(Number($(space).attr('data-space')));
 			} else if($(space).attr('data-filled')==='black'){
 				blackSpaces.push(Number($(space).attr('data-space')));
-			};
+			}
 		});	
 		
 		wins.forEach(function(win){
@@ -81,7 +81,7 @@ function Board(){
 					}
 				}
 			}
-		})
+		});
 	};
 
 	let dropChip = (e)=>{
@@ -98,7 +98,7 @@ function Board(){
 		let target = e.target;
 		let column = $(target).attr('data-column');
 		//Grabs all dom elements with the same column as the event target and puts them in an array.
-		let columnArray = []
+		let columnArray = [];
 		let jQObject = $(`.space[data-column=${column}]`);
 		//Transforms jQuery Object into a JS Array.
 		columnArray = $.makeArray(jQObject);
@@ -108,7 +108,7 @@ function Board(){
 		//Drops chip into selected board column.
 		for (let x=0; x<6; x++){
 			let filledStatus = $(columnArray[x]).attr('data-filled');
-			filledStatus = (filledStatus !== "false");
+			filledStatus = (filledStatus !== 'false');
 			if (!filledStatus) {
 				$(columnArray[x]).attr('data-filled', chipColor);
 				$(columnArray[x]).css('background', chipColor);
@@ -118,14 +118,14 @@ function Board(){
 				return;
 			}
 		}
-	}
+	};
 
 	function hoverShade (e) {
 		e.preventDefault();
 		let target = e.target;
 		if ($(target).attr('data-filled') === 'false'){
 			$(target).css('background', 'lightgrey');
-		};	
+		}
 	}
 
 	function removeShade(e){
@@ -133,7 +133,7 @@ function Board(){
 		let target = e.target;
 		if ($(target).attr('data-filled') === 'false'){
 			$(target).css('background', 'white');
-		};		
+		}		
 	}
 
 	// Adds a click event listener to each column on the board.
