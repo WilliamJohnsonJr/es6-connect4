@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import _ from 'lodash';
 import {Player} from './player.js';
 import {Computer} from './computer.js';
 import {wins} from './wins.js';
@@ -47,9 +46,9 @@ function Board(){
 				blackSpaces.push(Number($(space).attr('data-space')));
 			}
 		});	
-		let resultArray = [blackSpaces, redSpaces]
+		let resultArray = [blackSpaces, redSpaces];
 		return resultArray;
-	}
+	};
 
 	let checkForWin = ()=>{
 		let resultArray = spaceChecker();
@@ -68,7 +67,7 @@ function Board(){
 						}
 					}
 				}
-			})
+			});
 		}
 		if (this.turn === 'player'){
 			wins.forEach(function(win){
@@ -82,7 +81,7 @@ function Board(){
 						}
 					}
 				}
-			})
+			});
 		}
 		if (this.turnCount === 41){
 			$('.space').off('click');
@@ -95,8 +94,9 @@ function Board(){
 			let spaceResults = spaceChecker();
 			let redSpaces = spaceResults[1];
 			let blackSpaces = spaceResults[0];
+			//Blocks player move if player has three-in-a-row.
 			let blockMove = [];
-			let boardStatus = wins.map(function(win){
+			wins.map(function(win){
 				if (redSpaces.includes(win[0])){
 					if (redSpaces.includes(win[1])){
 						if (redSpaces.includes(win[2])){
@@ -104,8 +104,9 @@ function Board(){
 						}
 					}
 				}
-			})
-			let winMove = []
+			});
+			//Goes for win if black has three-in-a-row
+			let winMove = [];
 			wins.forEach(function(win){
 				if (blackSpaces.includes(win[0])){
 					if (blackSpaces.includes(win[1])){
@@ -114,7 +115,7 @@ function Board(){
 						}
 					}
 				}
-			})
+			});
 			if (blockMove[0] >= 0) {
 				let q = blockMove[0];
 				$(`.space[data-space=${q}]`).trigger('click');
@@ -129,7 +130,7 @@ function Board(){
 				$(pickSpacesArray[0]).trigger('click');
 			}
 		}
-	}
+	};
 
 	let dropChip = (e)=>{
 		e.preventDefault();
