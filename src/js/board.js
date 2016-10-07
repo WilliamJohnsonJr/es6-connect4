@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import _ from 'lodash';
 import {Player} from './player.js';
 import {Computer} from './computer.js';
 import {wins} from './wins.js';
@@ -50,39 +51,38 @@ function Board(){
 		return resultArray;
 	};
 
+//Thanks to http://stackoverflow.com/questions/9204283/how-to-check-whether-multiple-values-exist-within-an-javascript-array
+//for this useful function, slightly modified via fat arrow notation.
+	let containsAll = (needles, haystack)=>{ 
+		for(let i = 0 , len = needles.length; i < len; i++){
+			if($.inArray(needles[i], haystack) == -1) return false;
+		}
+		return true;
+	};
+
 	let checkForWin = ()=>{
 		let resultArray = spaceChecker();
 		let blackSpaces = resultArray[0];
 		let redSpaces = resultArray[1];
-
-		if (this.turn === 'computer'){
-			wins.forEach(function(win){
-				if (blackSpaces.includes(win[0])){
-					if (blackSpaces.includes(win[1])){
-						if (blackSpaces.includes(win[2])){
-							if (blackSpaces.includes(win[3])){
-								$('.space').off('click');
-								alert('You Lose!');
-							}
-						}
-					}
-				}
-			});
+		// Runs through all wins, and returns an array of false and true values based upon whether a win matches black chip locations
+		let computerResults = _.map(wins, function(win) {
+			return containsAll(win, blackSpaces);
+		});
+		// Runs through all wins, and returns an array of false and true values based upon whether a win matches red chip locations
+		let playerResults = _.map(wins, function(win) {
+			return containsAll(win, redSpaces);
+		});
+		//If true appears in the array, the computer has won		
+		if (_.includes(computerResults, true)){
+			$('.space').off('click');
+			alert('You Lose!');
 		}
-		if (this.turn === 'player'){
-			wins.forEach(function(win){
-				if (redSpaces.includes(win[0])){
-					if (redSpaces.includes(win[1])){
-						if (redSpaces.includes(win[2])){
-							if (redSpaces.includes(win[3])){
-								$('.space').off('click');
-								alert('You Win!');
-							}
-						}
-					}
-				}
-			});
+		//If true appears in the array, the player has won
+		if (_.includes(playerResults, true)){
+			$('.space').off('click');
+			alert('You Win!');
 		}
+		//Stops game in a draw if all spaces have been filled.
 		if (this.turnCount === 41){
 			$('.space').off('click');
 			alert('Draw!');
@@ -160,7 +160,7 @@ function Board(){
 		} else {
 			pickRandomSpace();
 		}
-	}
+	};
 
 	let dropChip = (e)=>{
 		e.preventDefault();
