@@ -72,12 +72,12 @@ function Board(){
 		let playerResults = _.map(wins, function(win) {
 			return containsAll(win, redSpaces);
 		});
-		//If true appears in the array, the computer has won		
+		//Checks to see if true appears in the array, and indicates if the computer has won
 		if (_.includes(computerResults, true)){
 			$('.space').off('click');
 			alert('You Lose!');
 		}
-		//If true appears in the array, the player has won
+		//Checks to see if true appears in the array, and indicates if the player has won
 		if (_.includes(playerResults, true)){
 			$('.space').off('click');
 			alert('You Win!');
@@ -93,55 +93,71 @@ function Board(){
 		if (this.turn === 'computer') {
 			let spaceResults = spaceChecker();
 			let redSpaces = spaceResults[1];
-			let blackSpaces = spaceResults[0];
-			//Blocks player move if player has three-in-a-row.
-			let blockMove = [];
-			wins.map(function(win){
-				if (redSpaces.includes(win[0])){
-					if (redSpaces.includes(win[1])){
-						if (redSpaces.includes(win[2])){
-							blockMove.push(win[3]);
-						}
-					}
-				}
-			});
-			//Goes for win if black has three-in-a-row
-			let winMove = [];
+			let threats = [];
+			//Blocks player move if player has three-in-a-row.		
 			wins.forEach(function(win){
-				if (blackSpaces.includes(win[0])){
-					if (blackSpaces.includes(win[1])){
-						if (blackSpaces.includes(win[2])){
-							winMove.push(win[3]);
+				//Creates an array into which played spots that match a win array spot may be pushed.
+				let filterArray = [];
+				//Cycles through each winning spot (kitten) in a win, and pushes any corresponding played
+				//spot into the filterArray
+				win.forEach(function(winElement){
+					let kitten = winElement;
+					let filteredSpots = redSpaces.filter(function(spaceElement){
+						return spaceElement === kitten;
+					});
+					filterArray.push(filteredSpots[0]);	
+				});
+				//Creates a new, cleaned array that only contains integer values, no undefined values
+				let cleanArray = filterArray.filter(function(element){
+					return element != undefined;
+				});
+				//Flattens the cleanArray so that it is an array of integers, not an array of arrays of integers
+				let flattenedArray = _.flatten(cleanArray);
+				//Pushes the array containing matching spot values into the threats array
+				threats.push(flattenedArray);
+			});
+			//Filters the current threats and discards any threat with less than three matches
+			let filteredThreats = threats.filter(function(threatArray){
+				return threatArray.length == 3;
+			});
+			//If any threats are on the board that have three matches with a win, the computer
+			//evaluates the threats, determines the highest threat, and tries to block the player's next move
+			if (filteredThreats.length > 0) {
+				filteredThreats.forEach(function(highThreatArray){
+					let hTArray = highThreatArray;
+					let possibleWins = wins.filter(function(win){
+						let wholeKitten = win;
+						let result = _.difference(hTArray, wholeKitten);
+						return result.length === 1;
+					});
+					let dangerousSpaces = [];
+					//Cycles through all possibleWins, and finds the outstanding value needed to win
+					possibleWins.forEach(function(win){
+						let siameseKitten = win;
+						let winningSpace = _.difference(hTArray, siameseKitten);
+						//Pushes winning space value into dangerousSpaces array
+						dangerousSpaces.push(winningSpace[0]);
+					});
+					for (let x=0; x<dangerousSpaces.length; x++){
+						let spaceVal = dangerousSpaces[x];
+						//If a dangerous space is not filled
+						if ($(`.spaces[data-space=${spaceVal}]`).attr('data-filled') === 'false'){
+							let tomCat = $(`.spaces[data-space=${spaceVal}]`);
+							let spaceAttrVal = tomCat.attr('data-space');
+							//It checks to see what row the space is on and if the row below it is filled
+							//Remember that rows start at 5 at the bottom of board and top row is 0
+							if (Number($(`.spaces[data-space=${spaceAttrVal}]`)) < 35){
+								let spaceBelowVal = String(Number(spaceAttrVal) + 7);
+								let spaceBelowFilled = $(`.spaces[data-space=${spaceBelowVal}]`).attr('data-filled');
+								if (spaceBelowFilled !== 'false'){
+									tomCat.trigger('click');
+								}
+							} else {
+								tomCat.trigger('click');
+							}
 						}
 					}
-				}
-			});
-			if (blockMove[0] >= 0) {				
-				let q = blockMove[0];
-				let pickSpacesObject;
-				let column = $(`.space[data-space=${q}]`).attr('data-column');
-				pickSpacesObject = $(`.space[data-column=${column}]`);			
-				let pickSpacesArray = $.makeArray(pickSpacesObject);
-				let topSpace = pickSpacesArray[0];
-				let filled = $(topSpace).attr('data-filled');
-				if (filled ==='false'){				
-					$(`.space[data-space=${q}]`).trigger('click');
-				} else {
-					pickRandomSpace();
-				}
-			} else if (winMove[0] >= 0){
-				let q = winMove[0];
-				let pickSpacesObject;
-				let column = $(`.space[data-space=${q}]`).attr('data-column');
-				pickSpacesObject = $(`.space[data-column=${column}]`);			
-				let pickSpacesArray = $.makeArray(pickSpacesObject);
-				let topSpace = pickSpacesArray[0];
-				let filled = $(topSpace).attr('data-filled');
-				if (filled ==='false'){				
-					$(`.space[data-space=${q}]`).trigger('click');
-				} else {
-					pickRandomSpace();
-				}
+				});
 			} else {
 				pickRandomSpace();
 			}
