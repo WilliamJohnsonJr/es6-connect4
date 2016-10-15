@@ -91,76 +91,99 @@ function Board(){
 
 	let computerTurn = ()=>{
 		if (this.turn === 'computer') {
+			//Checks to see which spaces have been played
 			let spaceResults = spaceChecker();
+			//Places all black spaces in an array
+			let blackSpaces = spaceResults[0];
+			//Places all red spaces in an array
 			let redSpaces = spaceResults[1];
 			let threats = [];
-			//Blocks player move if player has three-in-a-row.		
-			wins.forEach(function(win){
-				//Creates an array into which played spots that match a win array spot may be pushed.
-				let filterArray = [];
-				//Cycles through each winning spot (kitten) in a win, and pushes any corresponding played
-				//spot into the filterArray
-				win.forEach(function(winElement){
-					let kitten = winElement;
-					let filteredSpots = redSpaces.filter(function(spaceElement){
-						return spaceElement === kitten;
+
+			let getThreats = () => {
+				wins.forEach(function(win){
+					//Creates an array into which played spots that match a win array spot may be pushed
+					let filterArray = [];
+					//Cycles through each winning spot (kitten) in a win, and pushes any corresponding played
+					//spot into the filterArray
+					win.forEach(function(winElement){
+						let kitten = winElement;
+						let filteredSpots = redSpaces.filter(function(spaceElement){
+							return spaceElement === kitten;
+						});
+						filterArray.push(filteredSpots[0]);	
 					});
-					filterArray.push(filteredSpots[0]);	
-				});
-				//Creates a new, cleaned array that only contains integer values, no undefined values
-				let cleanArray = filterArray.filter(function(element){
-					return element != undefined;
-				});
-				//Flattens the cleanArray so that it is an array of integers, not an array of arrays of integers
-				let flattenedArray = _.flatten(cleanArray);
-				//Pushes the array containing matching spot values into the threats array
-				threats.push(flattenedArray);
-			});
+					//Creates a new, cleaned array that only contains integer values, no undefined values
+					let cleanArray = filterArray.filter(function(element){
+						return element != undefined;
+					});
+					//Flattens the cleanArray so that it is an array of integers, not an array of arrays of integers
+					let flattenedArray = _.flatten(cleanArray);
+					//Pushes the array containing matching spot values into the threats array
+					threats.push(flattenedArray);
+				});				
+			}
+
+			let filterThreats = () => {
 			//Filters the current threats and discards any threat with less than three matches
-			let filteredThreats = threats.filter(function(threatArray){
-				return threatArray.length == 3;
-			});
-			//If any threats are on the board that have three matches with a win, the computer
-			//evaluates the threats, determines the highest threat, and tries to block the player's next move
-			if (filteredThreats.length > 0) {
-				filteredThreats.forEach(function(highThreatArray){
-					let hTArray = highThreatArray;
-					let possibleWins = wins.filter(function(win){
-						let wholeKitten = win;
-						let result = _.difference(hTArray, wholeKitten);
-						return result.length === 1;
-					});
-					let dangerousSpaces = [];
-					//Cycles through all possibleWins, and finds the outstanding value needed to win
-					possibleWins.forEach(function(win){
-						let siameseKitten = win;
-						let winningSpace = _.difference(hTArray, siameseKitten);
-						//Pushes winning space value into dangerousSpaces array
-						dangerousSpaces.push(winningSpace[0]);
-					});
-					for (let x=0; x<dangerousSpaces.length; x++){
-						let spaceVal = dangerousSpaces[x];
-						//If a dangerous space is not filled
-						if ($(`.spaces[data-space=${spaceVal}]`).attr('data-filled') === 'false'){
-							let tomCat = $(`.spaces[data-space=${spaceVal}]`);
-							let spaceAttrVal = tomCat.attr('data-space');
+				let filteredThreats = threats.filter(function(threatArray){
+					return threatArray.length == 3;
+				});
+				threats = filteredThreats;
+				console.log("Filtered Threats:", threats);
+			}
+
+			let evaluateAndMakeMove = () => {
+				//If any threats are on the board that have three matches with a win array, the computer
+				//evaluates the threats, determines the highest threat, and tries to block the player's next move
+				if (threats.length > 0) {
+					threats.forEach(function(highThreatArray){
+						let hTArray = highThreatArray;
+						let possibleWins = wins.filter(function(win){
+							let wholeKitten = win;
+							let result = _.difference(hTArray, wholeKitten);
+							return result.length === 1;
+						});
+						let dangerousSpaces = [];
+						//Cycles through all possibleWins, and finds the outstanding value needed to win
+						possibleWins.forEach(function(win){
+							let siameseKitten = win;
+							let winningSpace = _.difference(hTArray, siameseKitten);
+							//Pushes winning space value into dangerousSpaces array
+							dangerousSpaces.push(winningSpace[0]);
+						});
+						console.log("Dangerous Spaces:", dangerousSpaces);
+						for (let x=0; x<dangerousSpaces.length; x++){
+							let spaceVal = dangerousSpaces[x];
+							let occupied = _.includes(blackSpaces, spaceVal);
+							//If a dangerous space is not filled
+							if (!occupied){
+								let tomCat = $(`.spaces[data-space=${spaceVal}]`);
+								let spaceAttrVal = tomCat.attr('data-space');
 							//It checks to see what row the space is on and if the row below it is filled
 							//Remember that rows start at 5 at the bottom of board and top row is 0
-							if (Number($(`.spaces[data-space=${spaceAttrVal}]`)) < 35){
-								let spaceBelowVal = String(Number(spaceAttrVal) + 7);
-								let spaceBelowFilled = $(`.spaces[data-space=${spaceBelowVal}]`).attr('data-filled');
-								if (spaceBelowFilled !== 'false'){
-									tomCat.trigger('click');
+								if (Number($(`.spaces[data-space=${spaceAttrVal}]`)) < 35){
+									let spaceBelowVal = String(Number(spaceAttrVal) + 7);
+									let spaceBelowFilled = $(`.spaces[data-space=${spaceBelowVal}]`).attr('data-filled');
+							//If the space below the dangerous space is filled, the computer makes its move to block, clears
+							//the dangerousSpaces array, and stops the for loop so that the computer won't make a million
+							//moves at once
+									if (spaceBelowFilled !== 'false'){
+										tomCat.trigger('click');
+										return dangerousSpaces = [];
+									}
 								}
-							} else {
-								tomCat.trigger('click');
 							}
 						}
-					}
-				});
-			} else {
-				pickRandomSpace();
+					});
+				} else {
+					//If no threat is detected, the computer picks a random space.
+					pickRandomSpace();
+				}
 			}
+			//Blocks player move if player has three-in-a-row
+			getThreats();
+			filterThreats();
+			evaluateAndMakeMove();	
 		}
 	};
 
