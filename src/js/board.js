@@ -107,7 +107,6 @@ function Board(){
 					//spot into the filterArray
 					win.forEach(function(winElement){
 						let kitten = winElement;
-					//EDIT THIS FUNCTIONALITY
 						let filteredSpots = redSpaces.filter(function(spaceElement){
 							return spaceElement === kitten;
 						});
@@ -132,47 +131,64 @@ function Board(){
 				//If any threats are on the board that have three matches with a win array, the computer
 				//evaluates the threats, determines the highest threat, and tries to block the player's next move
 				if (threats.length > 0) {
+					console.log('threats.length greater than 0');
+					//Cycles through all possibleWins and finds the outstanding, unfilled spaces needed to win
+					let possibleWins = [];
+					let dangerousSpaces = [];
 					threats.forEach(function(highThreatArray){
 						let hTArray = highThreatArray;
-						let possibleWins = wins.filter(function(win){
+						let winsToWatch = wins.filter(function(win){
 							let wholeKitten = win;
-							let result = _.difference(hTArray, wholeKitten);
+							let result = _.difference(wholeKitten, hTArray);
+							if ((result.length === 1) && !(blackSpaces.includes(result[0]))){
+								dangerousSpaces.push(result);	
+							}
 							return result.length === 1;
 						});
-						let dangerousSpaces = [];
-						//Cycles through all possibleWins, and finds the outstanding value needed to win
-						possibleWins.forEach(function(win){
-							let siameseKitten = win;
-							let winningSpace = _.difference(hTArray, siameseKitten);
-							//Pushes winning space value into dangerousSpaces array
-							dangerousSpaces.push(winningSpace[0]);
-						});
-						console.log("Dangerous Spaces:", dangerousSpaces);
+						possibleWins.push(winsToWatch);
+					});
+					possibleWins = _.flatten(possibleWins);
+					dangerousSpaces = _.flatten(dangerousSpaces);
+					dangerousSpaces = _.uniq(dangerousSpaces);
+					//If no dangerousSpace exists, computer picks random space
+					if (dangerousSpaces.length < 1){
+						pickRandomSpace();
+					} else {
+						//Runs through the dangerousSpaces to see if the space below each one is filled. 
+						//If the space below a dangerousSpace is filled, the computer uses its turn to take
+						//that dangerousSpace before the player can.
 						for (let x=0; x<dangerousSpaces.length; x++){
+							console.log('for loop number ', x);
 							let spaceVal = dangerousSpaces[x];
-							let occupied = _.includes(blackSpaces, spaceVal);
-							//If a dangerous space is not filled
-							if (!occupied){
-								let tomCat = $(`.spaces[data-space=${spaceVal}]`);
-								let spaceAttrVal = tomCat.attr('data-space');
+							let tomCat = $(`.space[data-space=${spaceVal}]`);
+							let spaceAttrVal = tomCat.attr('data-space');
 							//It checks to see what row the space is on and if the row below it is filled
 							//Remember that rows start at 5 at the bottom of board and top row is 0
-								if (Number($(`.spaces[data-space=${spaceAttrVal}]`)) < 35){
-									let spaceBelowVal = String(Number(spaceAttrVal) + 7);
-									let spaceBelowFilled = $(`.spaces[data-space=${spaceBelowVal}]`).attr('data-filled');
+							if (Number(spaceAttrVal) < 35){
+								console.log('if space less than 35');
+								let spaceBelowVal = String(Number(spaceAttrVal) + 7);
+								let spaceBelowFilled = $(`.space[data-space=${spaceBelowVal}]`).attr('data-filled');
 							//If the space below the dangerous space is filled, the computer makes its move to block, clears
 							//the dangerousSpaces array, and stops the for loop so that the computer won't make a million
 							//moves at once
-									if (spaceBelowFilled !== 'false'){
-										tomCat.trigger('click');
-										return dangerousSpaces = [];
-									}
+								if (spaceBelowFilled !== 'false'){
+									console.log('space below IS filled! Blocking!', spaceAttrVal);
+									tomCat.trigger('click');
+									dangerousSpaces = [];
+								} else {
+									//If the space below isn't filled, the computer makes a random move.
+									pickRandomSpace();
 								}
+							} else {
+								console.log('if space greater than 35');
+								tomCat.trigger('click');
+								dangerousSpaces = [];
 							}
 						}
-					});
+					}
 				} else {
 					//If no threat is detected, the computer picks a random space.
+					console.log('no threat detected');
 					pickRandomSpace();
 				}
 			}
