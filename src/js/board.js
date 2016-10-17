@@ -107,17 +107,14 @@ function Board(){
 					//spot into the filterArray
 					win.forEach(function(winElement){
 						let kitten = winElement;
+					//EDIT THIS FUNCTIONALITY
 						let filteredSpots = redSpaces.filter(function(spaceElement){
 							return spaceElement === kitten;
 						});
-						filterArray.push(filteredSpots[0]);	
+						filterArray.push(filteredSpots);	
 					});
-					//Creates a new, cleaned array that only contains integer values, no undefined values
-					let cleanArray = filterArray.filter(function(element){
-						return element != undefined;
-					});
-					//Flattens the cleanArray so that it is an array of integers, not an array of arrays of integers
-					let flattenedArray = _.flatten(cleanArray);
+					//Flattens the filterArray so that it is an array of integers, not an array of arrays of integers
+					let flattenedArray = _.flatten(filterArray);
 					//Pushes the array containing matching spot values into the threats array
 					threats.push(flattenedArray);
 				});				
@@ -129,7 +126,6 @@ function Board(){
 					return threatArray.length == 3;
 				});
 				threats = filteredThreats;
-				console.log("Filtered Threats:", threats);
 			}
 
 			let evaluateAndMakeMove = () => {
