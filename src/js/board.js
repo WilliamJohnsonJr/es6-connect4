@@ -152,44 +152,44 @@ function Board(){
 					dangerousSpaces = _.uniq(dangerousSpaces);
 					//If no dangerousSpace exists, computer picks random space
 					if (dangerousSpaces.length < 1){
-						pickRandomSpace();
+						window.setTimeout(pickRandomSpace, 1000);
 					} else {
 						//Runs through the dangerousSpaces to see if the space below each one is filled. 
 						//If the space below a dangerousSpace is filled, the computer uses its turn to take
 						//that dangerousSpace before the player can.
-						for (let x=0; x<dangerousSpaces.length; x++){
-							console.log('for loop number ', x);
-							let spaceVal = dangerousSpaces[x];
+						let gamePoints = [];
+						dangerousSpaces.forEach(function(dangerousSpace){
+							let spaceVal = dangerousSpace;
 							let tomCat = $(`.space[data-space=${spaceVal}]`);
 							let spaceAttrVal = tomCat.attr('data-space');
 							//It checks to see what row the space is on and if the row below it is filled
 							//Remember that rows start at 5 at the bottom of board and top row is 0
 							if (Number(spaceAttrVal) < 35){
-								console.log('if space less than 35');
 								let spaceBelowVal = String(Number(spaceAttrVal) + 7);
 								let spaceBelowFilled = $(`.space[data-space=${spaceBelowVal}]`).attr('data-filled');
-							//If the space below the dangerous space is filled, the computer makes its move to block, clears
-							//the dangerousSpaces array, and stops the for loop so that the computer won't make a million
-							//moves at once
+							//If the space below the dangerous space is filled, the computer notes that space
+							//as a gamePoint.
 								if (spaceBelowFilled !== 'false'){
-									console.log('space below IS filled! Blocking!', spaceAttrVal);
-									tomCat.trigger('click');
-									dangerousSpaces = [];
-								} else {
-									//If the space below isn't filled, the computer makes a random move.
-									pickRandomSpace();
-								}
+									gamePoints.push(spaceAttrVal);
+								} 
 							} else {
-								console.log('if space greater than 35');
-								tomCat.trigger('click');
-								dangerousSpaces = [];
+								gamePoints.push(spaceAttrVal);
 							}
+						});
+						//If any player gamePoints are open, the computer blocks. Otherwise, it picks a random space.
+						if (gamePoints.length > 0){
+							let clicker = () =>{
+								let tomCat = $(`.space[data-space=${gamePoints[0]}]`);
+								tomCat.trigger('click');
+							}
+							window.setTimeout(clicker, 1000);
+						} else {
+							window.setTimeout(pickRandomSpace, 1000);
 						}
 					}
 				} else {
 					//If no threat is detected, the computer picks a random space.
-					console.log('no threat detected');
-					pickRandomSpace();
+					window.setTimeout(pickRandomSpace, 1000);
 				}
 			}
 			//Blocks player move if player has three-in-a-row
