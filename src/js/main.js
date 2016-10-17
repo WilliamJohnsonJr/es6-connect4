@@ -1,9 +1,6 @@
 import $ from 'jquery';
-import _ from 'lodash';
 import { Board } from './board.js';
 import { Computer } from './computer.js';
-import { wins } from './wins.js';
-import { spaceChecker } from './utilities.js';
 
 function init(e){
 	e.preventDefault();

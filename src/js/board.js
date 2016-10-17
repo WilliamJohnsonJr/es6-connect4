@@ -4,7 +4,7 @@ import {wins} from './wins.js';
 import {spaceChecker} from './utilities.js';
 
 function Board(computer){
-	let player = {}
+	let player = {};
 	player.chip = 'red';
 	computer.chip = 'black';
 	// Object property and method declarations/maps

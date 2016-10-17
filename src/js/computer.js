@@ -27,7 +27,7 @@ let computerTurn = ()=>{
 		} else {
 			pickRandomSpace();
 		}
-	}
+	};
 
 	let getThreats = () => {
 		wins.forEach(function(win){
@@ -47,7 +47,7 @@ let computerTurn = ()=>{
 			//Pushes the array containing matching spot values into the threats array
 			threats.push(flattenedArray);
 		});				
-	}
+	};
 
 	let filterThreats = () => {
 	//Filters the current threats and discards any threat with less than three matches
@@ -55,7 +55,7 @@ let computerTurn = ()=>{
 			return threatArray.length == 3;
 		});
 		threats = filteredThreats;
-	}
+	};
 
 	let evaluateAndMakeMove = () => {
 		//If any threats are on the board that have three matches with a win array, the computer
@@ -110,7 +110,7 @@ let computerTurn = ()=>{
 					let clicker = () =>{
 						let tomCat = $(`.space[data-space=${gamePoints[0]}]`);
 						tomCat.trigger('click');
-					}
+					};
 					window.setTimeout(clicker, 1000);
 				} else {
 					window.setTimeout(pickRandomSpace, 1000);
@@ -120,11 +120,11 @@ let computerTurn = ()=>{
 			//If no threat is detected, the computer picks a random space.
 			window.setTimeout(pickRandomSpace, 1000);
 		}
-	}
+	};
 	//Blocks player move if player has three-in-a-row
 	getThreats();
 	filterThreats();
 	evaluateAndMakeMove();	
-}
+};
 
 export { Computer };
