@@ -61,10 +61,11 @@ body{
 }
 
 .start-text {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
+	text-align: center;
 	font-size: 40px;
-	color: black;
+	color: white;
+	background: black;
+	border: 6px solid #3273DC;
+    border-radius: 15px;
+    padding: 10px;
 }
