@@ -55,9 +55,7 @@ All tasks are listed below, but ideally you will just need to run `gulp start` a
 
 - `gulp start`: This is the primary task that will fire up the server and allow you to start building
 - `gulp server`: This will start a Browsersync server with live-reload
-- `gulp sass`: This will compile your SASS
-- `gulp browserify`: This will transpile your JS from ES6 to ES5
-- `gulp watch`: This will start a watcher for files
+- `gulp build`: This will compile your ES6 to ES5 and SCSS to CSS
 
 ## NPM Scripts
 
